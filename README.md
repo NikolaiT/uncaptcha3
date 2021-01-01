@@ -6,7 +6,7 @@ Yes you read that correctly: **It is possible to solve Google's Audio version of
 Since the release of [uncaptcha2](https://github.com/ecthros/uncaptcha2) is from **Jan 18, 2019**,
 the Proof of Concept code does not work anymore.
 
-This repository keeps the captcha breaking code up to date.
+This repository fixes this and attempts to keep the proof of concept up to date.
 
 ### Known Issues
 

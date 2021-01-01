@@ -150,7 +150,7 @@ def humanMove(coords, steps=0):
 		random_close = someWhereRandomClose(x, y, 220)
 		pyautogui.moveTo(random_close[0], random_close[1], random.uniform(0.1, .8), random.choice(move_types))
 
-	pyautogui.moveTo(x, y, random.uniform(0.3, 1.1), random.choice(move_types))
+	pyautogui.moveTo(x, y, random.uniform(0.1, .8), random.choice(move_types))
 	pyautogui.click()
 
 

@@ -13,13 +13,24 @@ import PIL.ImageGrab
 
 '''You'll need to update based on the coordinates of your setup'''
 
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
 CHROME_LAUNCH_COMMAND = 'chromium-browser --disable-gpu --disable-software-rasterizer' # command to start the chrome browser
 
 OPEN_CAPTCHA_ONLY = False # Open the captcha and stops. for debugging purposes
 UNTIL_PASTE_URL = False # Open the captcha and stops. for debugging purposes
 
 USE_CHROME_DEBUG_BROWSER = False # whether to control the browser via remote debug protocol
-USE_INCOGNITO = False # whether to use an incognito window or not
+USE_INCOGNITO = True # whether to use an incognito window or not
 USE_TEMP_USER_DATA_DIR = True # when a temporary user data dir is used, all cookies and session data is eradicated
 
 SEARCH_COORDS 		= (2164, 78) # Location of the Chrome Search box
@@ -42,8 +53,8 @@ ELEMENT_SELECTION_TOOL_COORDS = (40, 80) # coords of the dev tool element select
 IFRAME_SELECTION_COORDS = (2151, 415) # the captcha iframes
 CONSOLE_COORDS = (501, 81) # dev console link coords
 
-AUDIO_URL_COORDS = (732, 268) # where to right click on the url
-COPY_URL_COORDS = (820, 321) # where the "copy url" text is in the context menu
+AUDIO_URL_COORDS = (730, 272) # where to right click on the url
+COPY_URL_COORDS = (805, 351) # where the "copy url" text is in the context menu
 
 CLOSE_DEV_CONSOLE_COORDS = (1907, 40) # coords to close the dev console
 AUDIO_COORDS		= (2087, 732) # Location of the Audio button
@@ -51,14 +62,16 @@ AUDIO_COORDS		= (2087, 732) # Location of the Audio button
 DOWNLOAD_COORDS		= (318, 590) # Location of the Download button
 FINAL_COORDS  		= (315, 534) # Text entry box
 VERIFY_COORDS 		= (406, 647) # Verify button
-CLOSE_LOCATION		= (3826, 17) # Close the browser
+CLOSE_LOCATION		= (3826, 20) # Close the browser
 
 DEV_CONSOLE_COMMAND = "var bad = document.querySelector('.rc-doscaptcha-body-text'); if (bad) { bad.innerHTML; } else { var el = document.getElementById('audio-source'); if (el) { el.getAttribute('src') } else { var alt = document.querySelector('.rc-audiochallenge-tdownload-link'); if (alt) alt.getAttribute('href') } } \n"
 
 r = sr.Recognizer()
 
-def log(msg):
+def log(msg, color=None):
 	ts = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+	if color:
+		msg = bcolors.BOLD + color + msg + bcolors.ENDC
 	print('{} - {}'.format(ts, msg))
 
 def runCommand(command):
@@ -108,7 +121,7 @@ def someWhereRandomClose(x, y, max_dist=100):
 		randX = random.randrange(1, max_dist)
 		randY = random.randrange(1, max_dist)
 
-		if cnt % 2 == 0:
+		if random.choice([0, 1]) == 0:
 			randX *= -1
 			randY *= -1
 
@@ -187,15 +200,17 @@ def getDownloadLinkWithDevConsole():
 
 	# click on console
 	humanMove(CONSOLE_COORDS)
+
+	time.sleep(1)
 	
 	# get download link
 	log("Inject JavaScript to scrape Download URL")
-	pyautogui.typewrite(DEV_CONSOLE_COMMAND)
-	time.sleep(4)
+	pyautogui.write(DEV_CONSOLE_COMMAND, interval=0.022)
+	time.sleep(2)
 	
 	# paste url
 	log("Right Click on the URL")
-	pyautogui.moveTo(AUDIO_URL_COORDS[0], AUDIO_URL_COORDS[1], .74, pyautogui.easeInOutQuad)
+	pyautogui.moveTo(AUDIO_URL_COORDS[0], AUDIO_URL_COORDS[1])
 	pyautogui.click(button='right')
 	
 	time.sleep(1)
@@ -218,7 +233,7 @@ def getDownloadLinkWithDevConsole():
 	log("Got audio mp3 URL: {}".format(audioURL))
 
 	# close the dev console
-	humanMove(CLOSE_DEV_CONSOLE_COORDS, steps=1)
+	humanMove(CLOSE_DEV_CONSOLE_COORDS, steps=0)
 
 	return audioURL
 
@@ -226,8 +241,8 @@ def downloadCaptcha(wsURL):
 	log("Visiting Demo Site")
 
 	humanMove(SEARCH_COORDS, steps=1)
-
-	pyautogui.typewrite('https://www.google.com/recaptcha/api2/demo', interval=.02)
+	time.sleep(.5)
+	pyautogui.typewrite('https://www.google.com/recaptcha/api2/demo', interval=0.022)
 	pyautogui.press('enter')
 	time.sleep(.5)
 
@@ -271,7 +286,7 @@ def downloadCaptcha(wsURL):
 		audioURL = getDownloadURL(wsURL)
 
 		if audioURL.startswith('Your computer or network may be sending automated queries.'):
-			log('You got detected as a bot.')
+			log('You got detected as a bot.', bcolors.FAIL)
 			return -1
 	else:
 		audioURL = getDownloadLinkWithDevConsole()
@@ -313,7 +328,7 @@ def runCap():
 			command = CHROME_LAUNCH_COMMAND
 			if USE_INCOGNITO:
 				command += ' --incognito'
-			runCommand(command)
+			os.system(command + ' &')
 
 		# First, download the file
 		downloadResult = downloadCaptcha(wsURL)
@@ -336,7 +351,7 @@ def runCap():
 		log("Submitting To Speech to Text API...")
 		determined = google(audio) # Instead of google, you can use ibm or bing here
 
-		log('[!] Google speech to text API: "{}"'.format(determined))
+		log('[!] Google speech to text API: "{}"'.format(determined), bcolors.OKGREEN)
 		
 		log("Inputting Answer into Captcha")
 		# Input the captcha
@@ -353,6 +368,8 @@ def runCap():
 		time.sleep(1)
 		# Check that the captcha is completed
 		result = checkCaptcha()
+		if result:
+			log('Captcha was correct.', bcolors.OKGREEN)
 		return result
 	except Exception as e:
 		log('Error: {}'.format(str(e)))
@@ -363,13 +380,15 @@ if __name__ == '__main__':
 	fail = 0
 	allowed = 0
 
-	# Run this forever and print statistics
-	res = runCap()
-	if res == 1:
-		success += 1
-	elif res == 2: # Sometimes google just lets us in
-		allowed += 1
-	else:
-		fail += 1
+	while True:
+		# Run this forever and print statistics
+		res = runCap()
+		if res == 1:
+			success += 1
+		elif res == 2: # Sometimes google just lets us in
+			allowed += 1
+		else:
+			fail += 1
 
-	log("SUCCESSES: " + str(success) + " FAILURES: " + str(fail) + " Allowed: " + str(allowed))
+		humanMove(CLOSE_LOCATION, steps=1) # close the browser
+		log("SUCCESSES: " + str(success) + " FAILURES: " + str(fail) + " Allowed: " + str(allowed))

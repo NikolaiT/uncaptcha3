@@ -1,3 +1,12 @@
+
+### YouTube Video Proof of Concept
+
+Click on the image below to see the bot in action:
+
+[![Breaking Audio ReCaptcha Video](https://img.youtube.com/vi/-qUHu8U9M38/0.jpg)](https://www.youtube.com/watch?v=-qUHu8U9M38)
+
+### Introduction
+
 This repository uses the idea of [uncaptcha2](https://github.com/ecthros/uncaptcha2) to
 solve Google's Audio ReCaptcha with Google's own Speech-to-Text API.
 

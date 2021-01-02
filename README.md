@@ -5,6 +5,8 @@ Click on the image below to see the bot in action:
 
 [![Breaking Audio ReCaptcha Video](https://img.youtube.com/vi/-qUHu8U9M38/0.jpg)](https://www.youtube.com/watch?v=-qUHu8U9M38)
 
+Here is [another video of the bot in action](https://www.youtube.com/watch?v=Ft8zfK7XfYw). It solves the audio ReCaptcha in a endless loop.
+
 ### Introduction
 
 This repository uses the research work from the authors of [uncaptcha2](https://github.com/ecthros/uncaptcha2). 

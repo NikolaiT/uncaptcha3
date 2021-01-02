@@ -1,0 +1,1 @@
+var bad = document.querySelector('.rc-doscaptcha-body-text'); if (bad) { bad.innerHTML; } else { var el = document.getElementById('audio-source'); if (el) { el.getAttribute('src') } else { var alt = document.querySelector('.rc-audiochallenge-tdownload-link'); if (alt) alt.getAttribute('href') } }

@@ -161,11 +161,11 @@ def humanMove(coords, steps=0):
 	# move close to the target
 	for i in range(steps):
 		random_close = someWhereRandomClose(x, y, 220)
-		pyautogui.moveTo(random_close[0], random_close[1], random.uniform(0.1, .8), random.choice(move_types))
+		pyautogui.moveTo(random_close[0], random_close[1], random.uniform(0.1, .6), random.choice(move_types))
 
-	pyautogui.moveTo(x, y, random.uniform(0.1, .8), random.choice(move_types))
+	pyautogui.moveTo(x, y, random.uniform(0.1, .6), random.choice(move_types))
 	pyautogui.click()
-
+	
 
 def waitFor(x, y, color):
 	''' Wait for a coordinate to become a certain color '''
@@ -205,15 +205,15 @@ def getDownloadLinkWithDevConsole():
 	
 	# get download link
 	log("Inject JavaScript to scrape Download URL")
-	pyautogui.write(DEV_CONSOLE_COMMAND, interval=0.022)
+	pyautogui.typewrite(DEV_CONSOLE_COMMAND, interval=0.02)
 	time.sleep(2)
 	
 	# paste url
 	log("Right Click on the URL")
-	pyautogui.moveTo(AUDIO_URL_COORDS[0], AUDIO_URL_COORDS[1])
+	pyautogui.moveTo(AUDIO_URL_COORDS[0], AUDIO_URL_COORDS[1], .5)
 	pyautogui.click(button='right')
 	
-	time.sleep(1)
+	time.sleep(.5)
 
 	if UNTIL_PASTE_URL:
 		return -1
@@ -233,18 +233,16 @@ def getDownloadLinkWithDevConsole():
 	log("Got audio mp3 URL: {}".format(audioURL))
 
 	# close the dev console
-	humanMove(CLOSE_DEV_CONSOLE_COORDS, steps=0)
+	humanMove(CLOSE_DEV_CONSOLE_COORDS, steps=1)
 
 	return audioURL
 
 def downloadCaptcha(wsURL):
 	log("Visiting Demo Site")
-
-	humanMove(SEARCH_COORDS, steps=1)
-	time.sleep(.5)
-	pyautogui.typewrite('https://www.google.com/recaptcha/api2/demo', interval=0.022)
-	pyautogui.press('enter')
-	time.sleep(.5)
+	pyautogui.moveTo(SEARCH_COORDS[0], SEARCH_COORDS[1], .25, pyautogui.easeInOutQuad)
+	time.sleep(.25)
+	pyautogui.typewrite('https://www.google.com/recaptcha/api2/demo\n')
+	time.sleep(.75)
 
 	# Check if the page is loaded...
 	log("Check if Google ReCaptcha Symbol has correct color")

@@ -20,11 +20,21 @@ the Proof of Concept code does not work anymore (as the authors predicted correc
 
 This repository attempts to keep the proof of concept up to date and working.
 
+### Changes compared to uncaptcha2
+
+The ReCaptcha audio download link does not work anymore, Google removed the download option.
+
+Therefore, the audio download link has to be obtained via the Developer Console and a small JavaScript snippet.
+
+If I am not mistaken, ReCaptcha sanctions the opening of dev tools.
+
+Another way would be to start the chrome browser in debug mode and to obtain the audio download url via puppeteer and the chrome remote debug protocol. This method is implemented in the script `getCaptchaDownloadURL.js`.
+
+However, I fear that there are ways for ReCaptcha to detect if the browser is started in debug mode with the command line flag `--remote-debugging-port=9222`.
+
 ### Known Issues
 
-Of course Google is not easily tricked. After all, ReCaptcha v3 is still based on ReCaptcha v2.
-
-When you think that 97% of all captchas can be solved with this method in production, I need to warn you:
+Of course Google is not easily tricked. After all, ReCaptcha v3 is still based on ReCaptcha v2. When you think that 97% of all captchas can be solved with this method in production, I need to warn you:
 
 Google is very reluctant to serve the audio captcha. After all, audio captchas are supposed to be solved by visually impaired people. 
 
@@ -33,14 +43,6 @@ Even if you are navigating as real human being to the audio captcha, you will of
 ![Google Says no to the audio captcha](images/Google-says-no.png)
 
 I do not know how Google decides to block you, but I heavily assume that the very simple act of repeatingly prompting for the audio captcha is enough to become suspicious.
-
----
-
-Another issue: It is no longer possible to download the recaptcha audio. Google removed this download option. Instead, the audio download link is obtained by opening the dev tools window and inserting some JavaScript which extracts the audio url.
-
-If I am not mistaken, Google sanctions the opening of dev tools when solving the captcha.
-
-Another possibility is to obtain the download link via the remote debug protcol. This solution is implementd in `getCaptchaDownloadURL.js`.
 
 ### Installation
 

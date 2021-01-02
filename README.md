@@ -22,6 +22,8 @@ This repository attempts to keep the proof of concept up to date and working.
 
 ### Changes compared to uncaptcha2
 
+#### Audio Download Option was removed 
+
 The ReCaptcha audio download link does not work anymore, Google removed the download option.
 
 Therefore, the audio download link has to be obtained via the Developer Console and a small JavaScript snippet.
@@ -31,6 +33,12 @@ If I am not mistaken, ReCaptcha sanctions the opening of dev tools.
 Another way would be to start the chrome browser in debug mode and to obtain the audio download url via puppeteer and the chrome remote debug protocol. This method is implemented in the script `getCaptchaDownloadURL.js`.
 
 However, I fear that there are ways for ReCaptcha to detect if the browser is started in debug mode with the command line flag `--remote-debugging-port=9222`.
+
+#### Randomized Mouse Movements
+
+I randomized the mouse movements a bit and created random intermediate mouse movements before going to the target destination.
+
+Regarding this, there is much more possible.
 
 ### Known Issues
 

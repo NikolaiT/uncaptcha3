@@ -39,20 +39,20 @@ USE_TEMP_USER_DATA_DIR = False # when a temporary user data dir is used, all coo
 SEARCH_COORDS 		= (2074, 83) # Location of the Chrome Search box
 
 GOOGLE_LOCATION     = (2228, 458) # Location of the ReCaptcha Icon after navigating to google.com/recaptcha/api2/demo
-GOOGLE_COLOR 		= (28, 61, 169)  # Color of the Google Icon
+GOOGLE_COLOR 		= (27 ,61, 171)  # Color of the Google Icon
 
 CAPTCHA_COORDS		= (1983, 476) # Coordinates of the empty CAPTCHA checkbox
 CHECK_COORDS 		= (1984, 479) # Location where the green checkmark will be
 CHECK_COLOR 		= (0, 158, 85)  # Color of the green checkmark
 
-CAPTCHA_UNAVAILABLE_COLOR = (163,199,240)
+CAPTCHA_UNAVAILABLE_COLOR = (163, 199, 240)
 CAPTCHA_UNAVAILABLE_COORDS = (2212, 560)
 
 CAPTCHA_INPUT_COORDS = (2133, 472) # captcha input coordinates
 CAPTCHA_CHECK_BOX_COORDS = (2229, 582) # when submitting the captcha solution
 
-CAPTCHA_SOLVED_COORDS = (1987, 479) # then green "good sign" to check the captcha color
-RECAPTCHA_SYMBOL_COORDS = (2227, 459) # the recaptcha symbol coords for color check
+CAPTCHA_SOLVED_COORDS = (1983, 479) # then green "good sign" to check the captcha color
+RECAPTCHA_SYMBOL_COORDS = (2225, 460) # the recaptcha symbol coords for color check
 
 ELEMENT_SELECTION_TOOL_COORDS = (1943, 117) # coords of the dev tool element selection
 IFRAME_SELECTION_COORDS = (2692, 465) # the captcha iframes
@@ -158,18 +158,24 @@ def humanMove(coords, steps=0):
 	pyautogui.moveTo(x, y, random.uniform(0.1, .6), random.choice(move_types))
 	pyautogui.click()
 	
-
-def waitFor(x, y, color):
+def waitFor(x, y, color, tries=15, errorMargin=2):
 	''' Wait for a coordinate to become a certain color '''
-	pyautogui.moveTo(x, y, .5)
+	pyautogui.moveTo(x, y, .55, pyautogui.easeInQuad)
+	time.sleep(.5)
 	numWaitedFor = 0
-	while color != getPixel(x, y):
+	c = getPixel(x, y)
+	checkColor = sum(c)
+	# print('checkColor of (x, y)={}: {}'.format(str((x, y)), c))
+	# print('checkColor of (x+1, y+1)={}'.format(str(getPixel(x+1, y+1))))
+	# print('checkColor of (x-1, y+1)={}'.format(str(getPixel(x-1, y+1))))
+	# print('checkColor of (x-1, y-1)={}'.format(str(getPixel(x-1, y-1))))
+	# print('compareColor: {}'.format(color))
+	while sum(color) not in range(checkColor-errorMargin, checkColor+errorMargin):
 		time.sleep(.15)
 		numWaitedFor += 1
-		if numWaitedFor > 25:
+		if numWaitedFor > tries:
 			return -1
-	return 0
-
+	return 1
 	
 def getPixel(x, y):
 	return PIL.ImageGrab.grab().load()[x, y]
@@ -233,21 +239,19 @@ def downloadCaptcha():
 	log("Visiting Demo Site")
 	pyautogui.moveTo(SEARCH_COORDS[0], SEARCH_COORDS[1], .25, pyautogui.easeInOutQuad)
 	time.sleep(.25)
-	pyautogui.typewrite('https://www.google.com/recaptcha/api2/demo\n')
-	time.sleep(.75)
+	pyautogui.typewrite('https://www.google.com/recaptcha/api2/demo\n', interval=0.022)
+	time.sleep(.55)
 
 	# Check if the page is loaded...
 	log("Check if Google ReCaptcha Symbol has correct color")
-	pyautogui.moveTo(RECAPTCHA_SYMBOL_COORDS[0], RECAPTCHA_SYMBOL_COORDS[1], .55, pyautogui.easeInOutQuad)
-	
-	if waitFor(RECAPTCHA_SYMBOL_COORDS[0], RECAPTCHA_SYMBOL_COORDS[1], GOOGLE_COLOR) == -1:
+	if waitFor(RECAPTCHA_SYMBOL_COORDS[0], RECAPTCHA_SYMBOL_COORDS[1], GOOGLE_COLOR, tries=1) == -1:
 		log('recaptcha symbol does not have matching color')
 		return -1
 
 	# click on captcha coords
 	log("Click on ReCaptcha solving Button")
 	humanMove(CAPTCHA_COORDS, steps=1)
-	time.sleep(1)
+	time.sleep(.5)
 
 	# check if the captcha is already solved
 	# if yes, terminate
@@ -261,7 +265,7 @@ def downloadCaptcha():
 	time.sleep(.5)
 
 	if OPEN_CAPTCHA_ONLY:
-		return -1
+		return 3
 
 	# check if we are banned from solving the audio captcha
 	if getPixel(CAPTCHA_UNAVAILABLE_COORDS[0], CAPTCHA_UNAVAILABLE_COORDS[1]) == CAPTCHA_UNAVAILABLE_COLOR:
@@ -289,21 +293,19 @@ def downloadCaptcha():
 
 	# download the audio file with curl
 	audioURL = audioURL.strip()
-	curl_command = "curl '{}' > audioCurl.mp3".format(audioURL)
-	log('Downloading audio URL with Curl: {}'.format(curl_command))
+	curl_command = "curl -s '{}' > audioCurl.mp3".format(audioURL)
+	log('Downloading audio URL with Curl')
 
 	runCommand(curl_command)
 	return 0
 
 def checkCaptcha():
 	''' Check if we've completed the captcha successfully. '''
-	pyautogui.moveTo(CAPTCHA_SOLVED_COORDS[0], CAPTCHA_SOLVED_COORDS[1], .45, pyautogui.easeInOutQuad)
-
-	if CHECK_COLOR == getPixel(CAPTCHA_SOLVED_COORDS[0], CAPTCHA_SOLVED_COORDS[1]):
-		return True
-	else:
+	if waitFor(CAPTCHA_SOLVED_COORDS[0], CAPTCHA_SOLVED_COORDS[1], CHECK_COLOR, tries=1) == -1:
 		log("Captcha not solved")
 		return False
+	else:
+		return True
 
 def runCap():
 	try:
@@ -326,7 +328,7 @@ def runCap():
 			return downloadResult
 
 		if OPEN_CAPTCHA_ONLY:
-			return -1
+			return 3
 
 		# Convert the file to a format our APIs will understand
 		log("Converting Captcha to .wav format...")
@@ -341,14 +343,12 @@ def runCap():
 		log("Submitting To Speech to Text API...")
 		determined = google(audio) # Instead of google, you can use ibm or bing here
 
-		log('[!] Google speech to text API: "{}"'.format(determined), bcolors.OKGREEN)
+		log('Google speech to text API: "{}"'.format(determined), bcolors.OKBLUE)
 		
 		log("Inputting Answer into Captcha")
 		# Input the captcha
 		humanMove(CAPTCHA_INPUT_COORDS, steps=1)
-		time.sleep(.5)
 		pyautogui.typewrite(determined, interval=.025)
-		time.sleep(.5)
 
 		# click the check box
 		humanMove(CAPTCHA_CHECK_BOX_COORDS, steps=1)
@@ -359,7 +359,7 @@ def runCap():
 		# Check that the captcha is completed
 		result = checkCaptcha()
 		if result:
-			log('Captcha was correct.', bcolors.OKGREEN)
+			log('Captcha was correct!', bcolors.OKGREEN)
 		return result
 	except Exception as e:
 		log('Error: {}'.format(str(e)))
@@ -377,6 +377,8 @@ if __name__ == '__main__':
 			success += 1
 		elif res == 2: # Sometimes google just lets us in
 			allowed += 1
+		elif res == 3: # just abort
+			break
 		else:
 			fail += 1
 

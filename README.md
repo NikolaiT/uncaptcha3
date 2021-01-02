@@ -7,13 +7,16 @@ Click on the image below to see the bot in action:
 
 ### Introduction
 
-This repository uses the idea of [uncaptcha2](https://github.com/ecthros/uncaptcha2) to
-solve Google's Audio ReCaptcha with Google's own Speech-to-Text API.
+This repository uses the research work from the authors of [uncaptcha2](https://github.com/ecthros/uncaptcha2). 
 
-Yes you read that correctly: **It is possible to solve Google's Audio version of ReCaptcha v2 with Google's own [Speech-to-Text API](https://cloud.google.com/speech-to-text).**
+The original scientific paper [can be found here](https://uncaptcha.cs.umd.edu/papers/uncaptcha_woot17.pdf).
+
+The authors propose a method to solves Google's Audio ReCaptcha with Google's own Speech-to-Text API.
+
+Yes you read that correctly: **It is possible to solve the Audio version of ReCaptcha v2 with Google's own [Speech-to-Text API](https://cloud.google.com/speech-to-text).**
 
 Since the release of [uncaptcha2](https://github.com/ecthros/uncaptcha2) is from **Janunary 18, 2019**,
-the Proof of Concept code does not work anymore (as the authors predicted correctly)
+the Proof of Concept code does not work anymore (as the authors predicted correctly).
 
 This repository attempts to keep the proof of concept up to date and working.
 

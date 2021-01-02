@@ -1,0 +1,4 @@
+[27456:27456:0102/211231.065251:ERROR:sandbox_linux.cc(374)] InitializeSandbox() called with multiple threads in process gpu-process.
+
+DevTools listening on ws://127.0.0.1:9222/devtools/browser/5a8bc443-0e8d-428b-8fa6-970c91a5b7d4
+[27459:27466:0102/211231.592122:ERROR:nss_util.cc(283)] After loading Root Certs, loaded==false: NSS error code: -8018

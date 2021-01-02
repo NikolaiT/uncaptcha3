@@ -24,36 +24,41 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-CHROME_LAUNCH_COMMAND = 'chromium-browser --disable-gpu --disable-software-rasterizer' # command to start the chrome browser
+# command to start the chrome browser
+CHROME_LAUNCH_COMMAND = 'chromium-browser --disable-gpu --disable-software-rasterizer --window-size=1100,1200 --window-position=1920,0'
+
+CHROME_DEBUG_LAUNCH_COMMAND = 'chromium-browser {}--window-size=1100,1200 --window-position=1920,0 --remote-debugging-port=9222 --no-first-run --no-default-browser-check 2> browser.log &'
 
 OPEN_CAPTCHA_ONLY = False # Open the captcha and stops. for debugging purposes
 UNTIL_PASTE_URL = False # Open the captcha and stops. for debugging purposes
 
-USE_CHROME_DEBUG_BROWSER = False # whether to control the browser via remote debug protocol
-USE_INCOGNITO = True # whether to use an incognito window or not
-USE_TEMP_USER_DATA_DIR = True # when a temporary user data dir is used, all cookies and session data is eradicated
+USE_CHROME_DEBUG_BROWSER = True # whether to control the browser via remote debug protocol
+USE_INCOGNITO = False # whether to use an incognito window or not
+USE_TEMP_USER_DATA_DIR = False # when a temporary user data dir is used, all cookies and session data is eradicated
 
-SEARCH_COORDS 		= (2164, 78) # Location of the Chrome Search box
+SEARCH_COORDS 		= (2074, 83) # Location of the Chrome Search box
 
-GOOGLE_LOCATION     = (2225, 457) # Location of the ReCaptcha Icon after navigating to google.com/recaptcha/api2/demo
-GOOGLE_COLOR 		= (27, 61, 173)  # Color of the Google Icon
+GOOGLE_LOCATION     = (2228, 458) # Location of the ReCaptcha Icon after navigating to google.com/recaptcha/api2/demo
+GOOGLE_COLOR 		= (28, 61, 169)  # Color of the Google Icon
 
-CAPTCHA_COORDS		= (1981, 471) # Coordinates of the empty CAPTCHA checkbox
-CHECK_COORDS 		= (1991, 471) # Location where the green checkmark will be
+CAPTCHA_COORDS		= (1983, 476) # Coordinates of the empty CAPTCHA checkbox
+CHECK_COORDS 		= (1984, 479) # Location where the green checkmark will be
 CHECK_COLOR 		= (0, 158, 85)  # Color of the green checkmark
 
 CAPTCHA_UNAVAILABLE_COLOR = (163,199,240)
 CAPTCHA_UNAVAILABLE_COORDS = (2212, 560)
 
-CAPTCHA_INPUT_COORDS = (2138, 479) # captcha input coordinates
-CAPTCHA_CHECK_BOX_COORDS = (2228, 577) # when submitting the captcha solution
-CAPTCHA_SOLVED_COORDS = (1980, 479) # then green "good sign" to check the captcha color
-RECAPTCHA_SYMBOL_COORDS = (2225, 457) # the recaptcha symbol coords for color check
-ELEMENT_SELECTION_TOOL_COORDS = (40, 80) # coords of the dev tool element selection
-IFRAME_SELECTION_COORDS = (2151, 415) # the captcha iframes
-CONSOLE_COORDS = (501, 81) # dev console link coords
+CAPTCHA_INPUT_COORDS = (2133, 472) # captcha input coordinates
+CAPTCHA_CHECK_BOX_COORDS = (2229, 582) # when submitting the captcha solution
 
-AUDIO_URL_COORDS = (730, 272) # where to right click on the url
+CAPTCHA_SOLVED_COORDS = (1987, 479) # then green "good sign" to check the captcha color
+RECAPTCHA_SYMBOL_COORDS = (2227, 459) # the recaptcha symbol coords for color check
+
+ELEMENT_SELECTION_TOOL_COORDS = (1943, 117) # coords of the dev tool element selection
+IFRAME_SELECTION_COORDS = (2692, 465) # the captcha iframes
+CONSOLE_COORDS = (2225, 120) # dev console link coords
+
+AUDIO_URL_COORDS = (2265, 346) # where to right click on the url
 COPY_URL_COORDS = (805, 351) # where the "copy url" text is in the context menu
 
 CLOSE_DEV_CONSOLE_COORDS = (1907, 40) # coords to close the dev console
@@ -62,9 +67,9 @@ AUDIO_COORDS		= (2087, 732) # Location of the Audio button
 DOWNLOAD_COORDS		= (318, 590) # Location of the Download button
 FINAL_COORDS  		= (315, 534) # Text entry box
 VERIFY_COORDS 		= (406, 647) # Verify button
-CLOSE_LOCATION		= (3826, 20) # Close the browser
+CLOSE_LOCATION		= (3008, 14) # Close the browser
 
-DEV_CONSOLE_COMMAND = "var bad = document.querySelector('.rc-doscaptcha-body-text'); if (bad) { bad.innerHTML; } else { var el = document.getElementById('audio-source'); if (el) { el.getAttribute('src') } else { var alt = document.querySelector('.rc-audiochallenge-tdownload-link'); if (alt) alt.getAttribute('href') } } \n"
+DEV_CONSOLE_COMMAND = "var bad = document.querySelector('.rc-doscaptcha-body-text'); if (bad) { bad.innerHTML; } else { var el = document.getElementById('audio-source'); if (el) { el.getAttribute('src') } else { var alt = document.querySelector('.rc-audiochallenge-tdownload-link'); if (alt) alt.getAttribute('href') } }\n"
 
 r = sr.Recognizer()
 
@@ -89,24 +94,11 @@ def launchBrowserInDebugMode():
 	if USE_TEMP_USER_DATA_DIR:
 		temp_dir = tempfile.TemporaryDirectory()
 		tempdir = '--user-data-dir={} '.format(temp_dir.name)
-		# use temp_dir, and when done:ffmpeg
-		# temp_dir.cleanup()
 
-	command = 'chromium-browser {}--window-size=3840,1080 --remote-debugging-port=9222 --no-first-run --no-default-browser-check {}2> browser.log &'.format(incognito, tempdir)
-	print(command)
+	command = CHROME_DEBUG_LAUNCH_COMMAND.format(incognito)
+
 	os.system(command)
 	time.sleep(1)
-	data = open('browser.log').read()
-	url = re.findall(r'DevTools listening on (.*)', data)[0]
-	return url
-
-def getDownloadURL(wsURL):
-	command = 'node getCaptchaDownloadURL.js {}'.format(wsURL)
-	print(command)
-	outputs = runCommand('node getCaptchaDownloadURL.js ' + wsURL)
-	outputs = outputs.decode('utf8')
-	return outputs
-
 
 def someWhereRandomClose(x, y, max_dist=100):
 	"""
@@ -237,7 +229,7 @@ def getDownloadLinkWithDevConsole():
 
 	return audioURL
 
-def downloadCaptcha(wsURL):
+def downloadCaptcha():
 	log("Visiting Demo Site")
 	pyautogui.moveTo(SEARCH_COORDS[0], SEARCH_COORDS[1], .25, pyautogui.easeInOutQuad)
 	time.sleep(.25)
@@ -280,8 +272,9 @@ def downloadCaptcha(wsURL):
 	audioURL = -1
 
 	# get audioURL
-	if wsURL:
-		audioURL = getDownloadURL(wsURL)
+	if USE_CHROME_DEBUG_BROWSER:
+		audioURL = runCommand('node getCaptchaDownloadURL.js')
+		audioURL = audioURL.decode('utf8')
 
 		if audioURL.startswith('Your computer or network may be sending automated queries.'):
 			log('You got detected as a bot.', bcolors.FAIL)
@@ -295,9 +288,11 @@ def downloadCaptcha(wsURL):
 		return -1
 
 	# download the audio file with curl
-	log('Downloading audio URL with Curl')
-	runCommand("curl '{}' > audioCurl.mp3".format(audioURL))
-	
+	audioURL = audioURL.strip()
+	curl_command = "curl '{}' > audioCurl.mp3".format(audioURL)
+	log('Downloading audio URL with Curl: {}'.format(curl_command))
+
+	runCommand(curl_command)
 	return 0
 
 def checkCaptcha():
@@ -315,12 +310,9 @@ def runCap():
 		log("Removing old audio files...")
 		os.system('rm ./audio.wav 2>/dev/null') # These files may be left over from previous runs, and should be removed just in case.
 
-		wsURL = None
-
 		if USE_CHROME_DEBUG_BROWSER:
 			log("Opening Chrome in Debug Mode")
-			wsURL = launchBrowserInDebugMode()
-			log(wsURL)
+			launchBrowserInDebugMode()
 		else:
 			log("Starting Chrome")
 			command = CHROME_LAUNCH_COMMAND
@@ -329,7 +321,7 @@ def runCap():
 			os.system(command + ' &')
 
 		# First, download the file
-		downloadResult = downloadCaptcha(wsURL)
+		downloadResult = downloadCaptcha()
 		if downloadResult != 0:
 			return downloadResult
 

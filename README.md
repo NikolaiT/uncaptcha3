@@ -3,9 +3,7 @@
 
 Click on the image below to see the bot in action:
 
-[![Breaking Audio ReCaptcha Video](https://img.youtube.com/vi/-qUHu8U9M38/0.jpg)](https://www.youtube.com/watch?v=-qUHu8U9M38)
-
-Here is [another video of the bot in action](https://www.youtube.com/watch?v=Ft8zfK7XfYw). It solves the audio ReCaptcha in a endless loop.
+[![Breaking Audio ReCaptcha Video](https://img.youtube.com/vi/xh145UIeN9M/0.jpg)](https://youtu.be/xh145UIeN9M)
 
 ### Introduction
 

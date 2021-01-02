@@ -33,7 +33,7 @@ OPEN_CAPTCHA_ONLY = False # Open the captcha and stops. for debugging purposes
 UNTIL_PASTE_URL = False # Open the captcha and stops. for debugging purposes
 
 USE_CHROME_DEBUG_BROWSER = True # whether to control the browser via remote debug protocol
-USE_INCOGNITO = False # whether to use an incognito window or not
+USE_INCOGNITO = True # whether to use an incognito window or not
 USE_TEMP_USER_DATA_DIR = False # when a temporary user data dir is used, all cookies and session data is eradicated
 
 SEARCH_COORDS 		= (2074, 83) # Location of the Chrome Search box
@@ -153,9 +153,9 @@ def humanMove(coords, steps=0):
 	# move close to the target
 	for i in range(steps):
 		random_close = someWhereRandomClose(x, y, 220)
-		pyautogui.moveTo(random_close[0], random_close[1], random.uniform(0.1, .6), random.choice(move_types))
+		pyautogui.moveTo(random_close[0], random_close[1], random.uniform(0.1, .3), random.choice(move_types))
 
-	pyautogui.moveTo(x, y, random.uniform(0.1, .6), random.choice(move_types))
+	pyautogui.moveTo(x, y, random.uniform(0.1, .3), random.choice(move_types))
 	pyautogui.click()
 	
 def waitFor(x, y, color, tries=15, errorMargin=2):
@@ -239,7 +239,7 @@ def downloadCaptcha():
 	log("Visiting Demo Site")
 	pyautogui.moveTo(SEARCH_COORDS[0], SEARCH_COORDS[1], .25, pyautogui.easeInOutQuad)
 	time.sleep(.25)
-	pyautogui.typewrite('https://www.google.com/recaptcha/api2/demo\n', interval=0.022)
+	pyautogui.typewrite('https://www.google.com/recaptcha/api2/demo\n')
 	time.sleep(.55)
 
 	# Check if the page is loaded...

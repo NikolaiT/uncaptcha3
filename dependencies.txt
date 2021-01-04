@@ -1,3 +1,0 @@
-speechrecognition
-pyautogui
-Xlib

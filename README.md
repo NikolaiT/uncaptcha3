@@ -30,7 +30,7 @@ Therefore, the audio download link has to be obtained via the Developer Console 
 
 If I am not mistaken, ReCaptcha sanctions the opening of dev tools.
 
-Another way would be to start the chrome browser in debug mode and to obtain the audio download url via puppeteer and the chrome remote debug protocol. This method is implemented in the script `getCaptchaDownloadURL.js`.
+Therefore, the better way is to start the chrome browser in debug mode and to obtain the audio download url via puppeteer and the chrome remote debug protocol. This method is implemented in the script `getCaptchaDownloadURL.js`. This method is currently used.
 
 However, I fear that there are ways for ReCaptcha to detect if the browser is started in debug mode with the command line flag `--remote-debugging-port=9222`.
 
@@ -44,9 +44,11 @@ Regarding this, there is much more possible.
 
 Of course Google is not easily tricked. After all, ReCaptcha v3 is still based on ReCaptcha v2. When you think that 97% of all captchas can be solved with this method in production, I need to warn you:
 
-Google is very reluctant to serve the audio captcha. After all, audio captchas are supposed to be solved by visually impaired people. 
+Google is very reluctant to serve the audio captcha. After all, audio captchas are supposed to be solved by visually impaired people.
 
-Even if you are navigating as real human being to the audio captcha, you will often get banned by the captcha. If you are not logged into the Google account, you will get very often the following error when attempting to solve the audio captcha:
+I assume that there is a simple counter for serving audio captchas. If more than X audio captchas were served, Google will simply block you.
+
+Even if you are navigating as real human being to the audio captcha, you will often get banned by ReCaptcha. If you are not logged into the Google account, you will get very often the following error when attempting to solve the audio captcha:
 
 ![Google Says no to the audio captcha](images/Google-says-no.png)
 
@@ -59,6 +61,7 @@ The code was developed and tested on Ubuntu 18.04.
 The following software needs to be installed:
 
 ```
+aplay
 chromium-browser
 xclip
 ffmpeg
@@ -72,7 +75,7 @@ In order to install the Python 3.7 dependencies, create an virtual environment w
 pipenv --python 3.7
 
 # install dependencies
-pipenv install -r dependencies.txt
+pipenv install -r requirements.txt
 
 # create pipenv shell
 pipenv shell
@@ -92,3 +95,4 @@ Your setup very likely differs from my setup.
 
 Therefore, you need to adjust the coordinates in `solveAudioCaptcha.py`.
 
+You can also modify the `time.sleep()` calls in order to speed up or slow down the bot.

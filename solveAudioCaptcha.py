@@ -24,6 +24,9 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+# set this user agent to your browser user agent
+USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36'
+
 # command to start the chrome browser
 CHROME_LAUNCH_COMMAND = 'chromium-browser --disable-gpu --disable-software-rasterizer --window-size=1100,1200 --window-position=1920,0'
 
@@ -122,7 +125,7 @@ def someWhereRandomClose(x, y, max_dist=100):
 
 		cnt += 1
 
-		if cnt > 20:
+		if cnt > 15:
 			return (x, y)
 
 
@@ -152,24 +155,18 @@ def humanMove(coords, steps=0):
 
 	# move close to the target
 	for i in range(steps):
-		random_close = someWhereRandomClose(x, y, 220)
-		pyautogui.moveTo(random_close[0], random_close[1], random.uniform(0.1, .3), random.choice(move_types))
+		random_close = someWhereRandomClose(x, y, 320)
+		pyautogui.moveTo(random_close[0], random_close[1], random.uniform(0.1, .25), random.choice(move_types))
 
-	pyautogui.moveTo(x, y, random.uniform(0.1, .3), random.choice(move_types))
+	pyautogui.moveTo(x, y, random.uniform(0.1, .25), random.choice(move_types))
 	pyautogui.click()
 	
 def waitFor(x, y, color, tries=15, errorMargin=2):
 	''' Wait for a coordinate to become a certain color '''
-	pyautogui.moveTo(x, y, .55, pyautogui.easeInQuad)
-	time.sleep(.5)
+	pyautogui.moveTo(x, y)
 	numWaitedFor = 0
 	c = getPixel(x, y)
 	checkColor = sum(c)
-	# print('checkColor of (x, y)={}: {}'.format(str((x, y)), c))
-	# print('checkColor of (x+1, y+1)={}'.format(str(getPixel(x+1, y+1))))
-	# print('checkColor of (x-1, y+1)={}'.format(str(getPixel(x-1, y+1))))
-	# print('checkColor of (x-1, y-1)={}'.format(str(getPixel(x-1, y-1))))
-	# print('compareColor: {}'.format(color))
 	while sum(color) not in range(checkColor-errorMargin, checkColor+errorMargin):
 		time.sleep(.15)
 		numWaitedFor += 1
@@ -237,21 +234,19 @@ def getDownloadLinkWithDevConsole():
 
 def downloadCaptcha():
 	log("Visiting Demo Site")
-	pyautogui.moveTo(SEARCH_COORDS[0], SEARCH_COORDS[1], .25, pyautogui.easeInOutQuad)
-	time.sleep(.25)
+	pyautogui.moveTo(SEARCH_COORDS[0], SEARCH_COORDS[1], .15, pyautogui.easeInOutQuad)
 	pyautogui.typewrite('https://www.google.com/recaptcha/api2/demo\n')
-	time.sleep(.55)
+	time.sleep(1)
 
 	# Check if the page is loaded...
 	log("Check if Google ReCaptcha Symbol has correct color")
-	if waitFor(RECAPTCHA_SYMBOL_COORDS[0], RECAPTCHA_SYMBOL_COORDS[1], GOOGLE_COLOR, tries=1) == -1:
+	if waitFor(RECAPTCHA_SYMBOL_COORDS[0], RECAPTCHA_SYMBOL_COORDS[1], GOOGLE_COLOR, tries=5) == -1:
 		log('recaptcha symbol does not have matching color')
 		return -1
 
 	# click on captcha coords
 	log("Click on ReCaptcha solving Button")
 	humanMove(CAPTCHA_COORDS, steps=1)
-	time.sleep(.5)
 
 	# check if the captcha is already solved
 	# if yes, terminate
@@ -262,7 +257,6 @@ def downloadCaptcha():
 	# click on audio captcha
 	log("Click on Audio Captcha")
 	humanMove(AUDIO_COORDS, steps=1)
-	time.sleep(.5)
 
 	if OPEN_CAPTCHA_ONLY:
 		return 3
@@ -293,8 +287,9 @@ def downloadCaptcha():
 
 	# download the audio file with curl
 	audioURL = audioURL.strip()
-	curl_command = "curl -s '{}' > audioCurl.mp3".format(audioURL)
+	curl_command = "curl -s -H \"{}\" '{}' > audioCurl.mp3 2> curlError.log".format(USER_AGENT, audioURL)
 	log('Downloading audio URL with Curl')
+	# log(curl_command)
 
 	runCommand(curl_command)
 	return 0
@@ -310,7 +305,9 @@ def checkCaptcha():
 def runCap():
 	try:
 		log("Removing old audio files...")
-		os.system('rm ./audio.wav 2>/dev/null') # These files may be left over from previous runs, and should be removed just in case.
+		# These files may be left over from previous runs, and should be removed just in case.
+		os.system('rm ./audio.wav 2>/dev/null')
+		os.system('rm ./audioCurl.mp3 2>/dev/null')
 
 		if USE_CHROME_DEBUG_BROWSER:
 			log("Opening Chrome in Debug Mode")
@@ -335,7 +332,7 @@ def runCap():
 		os.system("echo 'y' | ffmpeg -i audioCurl.mp3 ./audio.wav 2>/dev/null")
 
 		# play the sound
-		os.system("aplay audio.wav")
+		os.system("aplay audio.wav 2>/dev/null &")
 		
 		with sr.AudioFile('./audio.wav') as source:
 			audio = r.record(source)
@@ -369,8 +366,10 @@ if __name__ == '__main__':
 	success = 0
 	fail = 0
 	allowed = 0
+	# how many captchas to solve
+	max_runs = 5
 
-	while True:
+	for i in range(max_runs):
 		# Run this forever and print statistics
 		res = runCap()
 		if res == 1:

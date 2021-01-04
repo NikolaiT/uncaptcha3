@@ -1,4 +1,16 @@
-[28653:28653:0102/231526.772986:ERROR:sandbox_linux.cc(374)] InitializeSandbox() called with multiple threads in process gpu-process.
+[10620:10620:0104/171916.594981:ERROR:sandbox_linux.cc(374)] InitializeSandbox() called with multiple threads in process gpu-process.
 
-DevTools listening on ws://127.0.0.1:9222/devtools/browser/7acc928e-e52c-4b9e-8fce-b87f1d1a107b
-[28655:28666:0102/231527.327503:ERROR:nss_util.cc(283)] After loading Root Certs, loaded==false: NSS error code: -8018
+DevTools listening on ws://127.0.0.1:9222/devtools/browser/9511ba5c-5e85-4f23-aec9-2dd37fea5916
+[10625:10629:0104/171917.178069:ERROR:nss_util.cc(283)] After loading Root Certs, loaded==false: NSS error code: -8018
+[10620:10620:0104/171917.841984:ERROR:shared_image_manager.cc(214)] SharedImageManager::ProduceSkia: Trying to Produce a Skia representation from a non-existent mailbox.
+[10620:10620:0104/171917.843046:ERROR:shared_image_manager.cc(214)] SharedImageManager::ProduceSkia: Trying to Produce a Skia representation from a non-existent mailbox.
+[10620:10620:0104/171917.843634:ERROR:shared_image_manager.cc(214)] SharedImageManager::ProduceSkia: Trying to Produce a Skia representation from a non-existent mailbox.
+[10620:10620:0104/171917.844254:ERROR:shared_image_manager.cc(214)] SharedImageManager::ProduceSkia: Trying to Produce a Skia representation from a non-existent mailbox.
+[10620:10620:0104/171917.844845:ERROR:shared_image_manager.cc(214)] SharedImageManager::ProduceSkia: Trying to Produce a Skia representation from a non-existent mailbox.
+[10620:10620:0104/171917.845434:ERROR:shared_image_manager.cc(214)] SharedImageManager::ProduceSkia: Trying to Produce a Skia representation from a non-existent mailbox.
+[10620:10620:0104/171917.846299:ERROR:shared_image_manager.cc(214)] SharedImageManager::ProduceSkia: Trying to Produce a Skia representation from a non-existent mailbox.
+[10620:10620:0104/171917.847311:ERROR:shared_image_manager.cc(214)] SharedImageManager::ProduceSkia: Trying to Produce a Skia representation from a non-existent mailbox.
+[10620:10620:0104/171917.848375:ERROR:shared_image_manager.cc(214)] SharedImageManager::ProduceSkia: Trying to Produce a Skia representation from a non-existent mailbox.
+[10620:10620:0104/171917.849441:ERROR:shared_image_manager.cc(214)] SharedImageManager::ProduceSkia: Trying to Produce a Skia representation from a non-existent mailbox.
+[10620:10620:0104/171917.850522:ERROR:shared_image_manager.cc(214)] SharedImageManager::ProduceSkia: Trying to Produce a Skia representation from a non-existent mailbox.
+[10620:10620:0104/171917.851529:ERROR:shared_image_manager.cc(214)] SharedImageManager::ProduceSkia: Trying to Produce a Skia representation from a non-existent mailbox.

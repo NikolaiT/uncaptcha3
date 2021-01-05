@@ -9,6 +9,26 @@ Click on the image below to see the bot in action:
 
 [![Breaking Audio ReCaptcha Video](https://img.youtube.com/vi/xh145UIeN9M/0.jpg)](https://youtu.be/xh145UIeN9M)
 
+
+### Conclusion
+
+After a while, Google blocks you based on one of (or combination of):
+
+1. Your IP address
+2. Your Browser fingerprint
+3. Your Browser JavaScript configuration if using headless browsers
+4. Or the lack of human-like behavior such as mouse events or touch events
+
+BUT: The Audio reCAPTCHA itself is completely, utterly broken. The normal, visual reCAPTCHA still works more or less. But it's a matter of time I guess.
+
+**My estimation is: In 2021 and the near future, there is no other way to tell humans apart from bots than to:**
+
+1. Record massive amounts of real human website behavior (mouse movements, scrolling, touch events, window resizing)
+2. Train an advanced Artificial Neuronal Network with this data
+3. And classify live behavioral data of website users
+
+Kinda interesting times.
+
 ### Introduction
 
 This repository uses the research work from the authors of [uncaptcha2](https://github.com/ecthros/uncaptcha2). 

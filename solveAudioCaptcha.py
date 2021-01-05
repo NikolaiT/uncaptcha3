@@ -101,7 +101,7 @@ def launchBrowserInDebugMode():
 	command = CHROME_DEBUG_LAUNCH_COMMAND.format(incognito)
 
 	os.system(command)
-	time.sleep(1)
+	time.sleep(1.75)
 
 def someWhereRandomClose(x, y, max_dist=100):
 	"""
@@ -156,9 +156,9 @@ def humanMove(coords, steps=0):
 	# move close to the target
 	for i in range(steps):
 		random_close = someWhereRandomClose(x, y, 320)
-		pyautogui.moveTo(random_close[0], random_close[1], random.uniform(0.1, .25), random.choice(move_types))
+		pyautogui.moveTo(random_close[0], random_close[1], random.uniform(0.1, .35), random.choice(move_types))
 
-	pyautogui.moveTo(x, y, random.uniform(0.1, .25), random.choice(move_types))
+	pyautogui.moveTo(x, y, random.uniform(0.1, .35), random.choice(move_types))
 	pyautogui.click()
 	
 def waitFor(x, y, color, tries=15, errorMargin=2):
@@ -168,7 +168,7 @@ def waitFor(x, y, color, tries=15, errorMargin=2):
 	c = getPixel(x, y)
 	checkColor = sum(c)
 	while sum(color) not in range(checkColor-errorMargin, checkColor+errorMargin):
-		time.sleep(.15)
+		time.sleep(.2)
 		numWaitedFor += 1
 		if numWaitedFor > tries:
 			return -1
@@ -234,15 +234,17 @@ def getDownloadLinkWithDevConsole():
 
 def downloadCaptcha():
 	log("Visiting Demo Site")
-	pyautogui.moveTo(SEARCH_COORDS[0], SEARCH_COORDS[1], .15, pyautogui.easeInOutQuad)
+	humanMove(SEARCH_COORDS, steps=1)
 	pyautogui.typewrite('https://www.google.com/recaptcha/api2/demo\n')
-	time.sleep(1)
+	time.sleep(1.75)
 
 	# Check if the page is loaded...
 	log("Check if Google ReCaptcha Symbol has correct color")
 	if waitFor(RECAPTCHA_SYMBOL_COORDS[0], RECAPTCHA_SYMBOL_COORDS[1], GOOGLE_COLOR, tries=5) == -1:
 		log('recaptcha symbol does not have matching color')
 		return -1
+
+	time.sleep(.25)
 
 	# click on captcha coords
 	log("Click on ReCaptcha solving Button")
@@ -253,6 +255,8 @@ def downloadCaptcha():
 	if checkCaptcha():
 		log("Google lets us in without solving the ReCaptcha")
 		return 2
+
+	time.sleep(.25)
 	
 	# click on audio captcha
 	log("Click on Audio Captcha")
@@ -344,11 +348,11 @@ def runCap():
 		
 		log("Inputting Answer into Captcha")
 		# Input the captcha
-		humanMove(CAPTCHA_INPUT_COORDS, steps=1)
+		humanMove(CAPTCHA_INPUT_COORDS, steps=2)
 		pyautogui.typewrite(determined, interval=.025)
 
 		# click the check box
-		humanMove(CAPTCHA_CHECK_BOX_COORDS, steps=1)
+		humanMove(CAPTCHA_CHECK_BOX_COORDS, steps=2)
 
 		# if Google gives us half correct solution: "Multiple correct solutions required - please solve more."
 		log("Verifying Answer")

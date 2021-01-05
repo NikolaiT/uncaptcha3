@@ -1,6 +1,10 @@
 
 ### YouTube Video Proof of Concept
 
+I created a new YouTube Video with technical Explanation for breaking Google's Audio reCAPTCHAs:
+
+[![Breaking Audio ReCaptcha Video](https://img.youtube.com/vi/1kBmbEwJpYo/0.jpg)](https://www.youtube.com/watch?v=1kBmbEwJpYo)
+
 Click on the image below to see the bot in action:
 
 [![Breaking Audio ReCaptcha Video](https://img.youtube.com/vi/xh145UIeN9M/0.jpg)](https://youtu.be/xh145UIeN9M)

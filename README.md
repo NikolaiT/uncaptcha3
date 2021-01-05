@@ -66,7 +66,7 @@ Regarding this, there is much more possible.
 
 ### Known Issues
 
-Of course Google is not easily tricked. After all, ReCaptcha v3 is still based on ReCaptcha v2. When you think that 97% of all captchas can be solved with this method in production, I need to warn you:
+Of course Google is not easily tricked. After all, ReCaptcha v3 is still based on ReCaptcha v2. When you think that ~~97%~~ 91% of all captchas can be solved with this method in production, I need to warn you:
 
 Google is very reluctant to serve the audio captcha. After all, audio captchas are supposed to be solved by visually impaired people.
 
